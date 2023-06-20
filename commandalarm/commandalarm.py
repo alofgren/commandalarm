@@ -186,7 +186,7 @@ def main():
                                         timeout=args.timeout,
                                         check=args.check,
                                         text=True)
-                print(result.stdout)
+                print(result.stdout.strip())
             except FileNotFoundError:
                 print("Command not found", file=sys.stderr)
             except subprocess.CalledProcessError as called_process_err:
