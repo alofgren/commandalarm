@@ -157,7 +157,7 @@ def main():
                         "--shell",
                         action="store_true",
                         default=False,
-                        help="run command with shell")
+                        help="run command in a shell")
     parser.add_argument("-n",
                         "--no-check",
                         action="store_false",
