@@ -19,9 +19,11 @@
 import argparse
 import datetime
 import errno
+import platform
 import signal
 import subprocess
 import sys
+import threading
 import time
 from . import __version__
 
@@ -66,8 +68,14 @@ def set_alarm(time_str, day):
         round((alarm_datetime - datetime.datetime.now()).total_seconds()))
     if seconds_until_alarm <= 0:
         seconds_until_alarm = 1
-    signal.signal(signal.SIGALRM, alarm_handler)
-    signal.alarm(seconds_until_alarm)
+    if platform.system() == 'Windows':
+        timer = threading.Timer(seconds_until_alarm,
+                                alarm_handler,
+                                args=(None, None))
+        timer.start()
+    else:
+        signal.signal(signal.SIGALRM, alarm_handler)
+        signal.alarm(seconds_until_alarm)
     print(f"Alarm set for {alarm_datetime}")
 
 
@@ -185,7 +193,10 @@ def main():
         set_alarm(args.time, args.day)
         while True:
             while not ALARM_FIRED:
-                signal.pause()
+                if platform.system() == 'Windows':
+                    time.sleep(1)
+                else:
+                    signal.pause()
             command_str = " ".join(args.command)
             command = command_str if args.shell else args.command
             print("Time is up!")
