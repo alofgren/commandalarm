@@ -79,30 +79,6 @@ def set_alarm(time_str, day):
     print(f"Alarm set for {alarm_datetime}")
 
 
-def validate_weekday(value):
-    """
-    Validates whether the given value is a valid weekday integer between 1 and 7.
-
-    Parameters:
-    value (str): The value to be validated.
-
-    Returns:
-    int: The weekday integer if it is valid.
-
-    Raises:
-    argparse.ArgumentTypeError: If the value is not a valid integer or not a valid weekday.
-    """
-    try:
-        weekday = int(value)
-        if weekday < 1 or weekday > 7:
-            raise argparse.ArgumentTypeError(
-                "%s is not a valid weekday (must be between 1 and 7)" % value)
-        return weekday
-    except ValueError as value_err:
-        raise argparse.ArgumentTypeError("%s is not a valid integer" %
-                                         value) from value_err
-
-
 def valid_time_string(time_str):
     """
     Validates that the time string is in the correct format.
@@ -156,7 +132,7 @@ def parse_arguments():
     parser.add_argument(
         "-d",
         "--day",
-        type=validate_weekday,
+        type=int,
         default=datetime.date.today().isoweekday(),
         help=
         "the day of the week as an integer from 1 to 7, where 1 represents Monday",
