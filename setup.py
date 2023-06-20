@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup (
     name = "CommandAlarm",
-    version = "0.2.5",
+    version = "0.2.6",
     author = "alofgren",
     author_email = "drelofren@outlook.com",
     description = "A simple command line program that allows users to set an alarm with a custom command.",
