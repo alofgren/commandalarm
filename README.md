@@ -55,7 +55,7 @@ commandalarm 09:15:00 --day 3 --timeout 30 python3 script.py
 
 To run a command in a shell, use the -s or --shell option:
 ```bash
-commandalarm 16:00:00 --shell 'ENV_VARIABLE="I am running in a shell"; echo $ENV_VARIABLE'
+commandalarm 16:00:00 --shell 'ENV_VAR="I am running in a shell"; echo $ENV_VAR'
 ```
 
 To disable further option processing, use two hyphens ("--") before the command:
