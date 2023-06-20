@@ -35,7 +35,7 @@ optional arguments:
   -d {1,2,3,4,5,6,7}, --day {1,2,3,4,5,6,7}
                         the day of the week as an integer from 1 to 7, where 1 represents Monday
   -r, --repeat          repeat indefinitely
-  -s, --shell           run command with shell
+  -s, --shell           run command in a shell
   -n, --no-check        don't check the command return code
   -t TIMEOUT, --timeout TIMEOUT
                         timeout in seconds for the command to complete
@@ -43,19 +43,24 @@ optional arguments:
 
 ## Examples
 
-To set an alarm for 2:00 PM on Tuesday, and play a sound when the alarm goes off:
+To set an alarm for 2:00 PM and play a sound when the alarm goes off:
 ```bash
-commandalarm -d 2 14:00:00 aplay alarm_sound.wav
-```
-
-To set an alarm for 10:00 PM to run a command with shell and repeat indefinitely: 
-```bash
-commandalarm 22:00:00 -r -s 'echo "Hello, world!"'
+commandalarm 14:00:00 aplay alarm_sound.wav
 ```
 
 To set an alarm for 9:15 AM on Wednesday to run a Python script with a timeout of 30 seconds: 
 ```bash
-commandalarm 09:15:00 -d 3 -t 30 python3 script.py
+commandalarm 09:15:00 --day 3 --timeout 30 python3 script.py
+```
+
+To run a command in a shell, use the -s or --shell option:
+```bash
+commandalarm 16:00:00 --shell 'ENV_VARIABLE="I am running in a shell"; echo $ENV_VARIABLE'
+```
+
+To disable further option processing, use two hyphens ("--") before the command:
+```bash
+commandalarm 16:00:00 -- ls -l
 ```
 
 ## Contributing
