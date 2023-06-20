@@ -116,11 +116,13 @@ def valid_time_string(time_str):
         ) from value_err
 
 
-def main():
+def parse_arguments():
     """
-    The main function that parses command-line arguments, sets the alarm and runs the command.
+    Parse command-line arguments using argparse.
+
+    Returns:
+        The parsed arguments.
     """
-    global ALARM_FIRED  # pylint: disable=W0603
     parser = argparse.ArgumentParser(
         description="Set an alarm with a custom command.")
     parser.add_argument(
@@ -169,17 +171,25 @@ def main():
                         default=None,
                         type=int,
                         help="timeout in seconds for the command to complete")
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+def main():
+    """
+    The main function that parses command-line arguments, sets the alarm and runs the command.
+    """
+    global ALARM_FIRED  # pylint: disable=W0603
+    args = parse_arguments()
     try:
         set_alarm(args.time, args.day)
         while True:
             while not ALARM_FIRED:
                 signal.pause()
-            print("Time is up!")
             command_str = " ".join(args.command)
+            command = command_str if args.shell else args.command
+            print("Time is up!")
             print("Running command:", command_str)
             try:
-                command = command_str if args.shell else args.command
                 result = subprocess.run(command,
                                         capture_output=True,
                                         shell=args.shell,
