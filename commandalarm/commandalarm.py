@@ -111,7 +111,7 @@ def parse_arguments():
     ValueError: If the time argument is not a valid time string.
     ValueError: If the day argument is not a valid integer between 1 and 7.
     """
-    parser = argparse.ArgumentParser(
+    parser = argparse.ArgumentParser(prog="commandalarm",
         description="Set an alarm with a custom command.")
     parser.add_argument(
         "time",
