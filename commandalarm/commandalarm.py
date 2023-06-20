@@ -111,19 +111,17 @@ def parse_arguments():
     ValueError: If the time argument is not a valid time string.
     ValueError: If the day argument is not a valid integer between 1 and 7.
     """
-    parser = argparse.ArgumentParser(prog="commandalarm",
-        description="Set an alarm with a custom command.")
-    parser.add_argument(
-        "time",
-        type=valid_time_string,
-        help="the time in the format HH:MM:SS",
-    )
-    parser.add_argument(
-        "command",
-        type=str,
-        nargs="+",
-        help="the command to run",
-    )
+    parser = argparse.ArgumentParser(
+        prog="commandalarm", description="Set an alarm with a custom command.")
+    parser.add_argument("time",
+                        type=valid_time_string,
+                        help="the time in the format HH:MM:SS")
+    parser.add_argument("command", type=str, help="the command to run")
+    parser.add_argument("argument",
+                        default=None,
+                        type=str,
+                        nargs="*",
+                        help="the arguments to the command")
     parser.add_argument("-v",
                         "--version",
                         action="version",
@@ -131,18 +129,15 @@ def parse_arguments():
     parser.add_argument(
         "-d",
         "--day",
-        type=int,
         default=datetime.date.today().isoweekday(),
+        type=int,
         help=
         "the day of the week as an integer from 1 to 7, where 1 represents Monday",
-        choices=range(1, 8),
-    )
-    parser.add_argument(
-        "-r",
-        "--repeat",
-        action="store_true",
-        help="repeat indefinitely",
-    )
+        choices=range(1, 8))
+    parser.add_argument("-r",
+                        "--repeat",
+                        action="store_true",
+                        help="repeat indefinitely")
     parser.add_argument("-s",
                         "--shell",
                         action="store_true",
@@ -176,8 +171,9 @@ def main():
                     time.sleep(1)
                 else:
                     signal.pause()
-            command_str = " ".join(args.command)
-            command = command_str if args.shell else args.command
+            command_str = f"{args.command} {' '.join(args.argument)}"
+            command = command_str if args.shell else [args.command
+                                                      ] + args.argument
             print("Time is up!")
             print("Running command:", command_str)
             try:
