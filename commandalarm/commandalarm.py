@@ -16,12 +16,13 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 """ Set an alarm with a custom command. """
 
+import argparse
+import datetime
+import errno
 import signal
+import subprocess
 import sys
 import time
-import datetime
-import argparse
-import subprocess
 from . import __version__
 
 ALARM_FIRED = False  # pylint: disable=W0603
@@ -199,17 +200,21 @@ def main():
                 print(result.stdout.strip())
             except FileNotFoundError:
                 print("Command not found", file=sys.stderr)
+                sys.exit(errno.ENOENT)
             except subprocess.CalledProcessError as called_process_err:
                 print(
                     f"Command returned non-zero exit status {called_process_err.returncode}",
                     file=sys.stderr)
                 print(f"stderr: {called_process_err.stderr}", file=sys.stderr)
+                sys.exit(called_process_err.returncode)
             except PermissionError as permission_err:
                 print(f"Permission error: {permission_err}", file=sys.stderr)
+                sys.exit(errno.EACCES)
             except subprocess.TimeoutExpired as timeout_expired:
                 print(
                     f"Command timed out after {timeout_expired.timeout} seconds",
                     file=sys.stderr)
+                sys.exit(errno.ETIME)
             if args.repeat:
                 ALARM_FIRED = False
                 time.sleep(1)
