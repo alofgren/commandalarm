@@ -21,13 +21,14 @@ pip install .
 ## Usage Output
 
 ```
-usage: commandalarm [-h] [-v] [-d {1,2,3,4,5,6,7}] [-r] [-s] [-n] [-t TIMEOUT] time command [command ...]
+usage: commandalarm [-h] [-v] [-d {1,2,3,4,5,6,7}] [-r] [-s] [-n] [-t TIMEOUT] time command [argument ...]
 
 Set an alarm with a custom command.
 
 positional arguments:
   time                  the time in the format HH:MM:SS
   command               the command to run
+  argument              the arguments to the command
 
 optional arguments:
   -h, --help            show this help message and exit
