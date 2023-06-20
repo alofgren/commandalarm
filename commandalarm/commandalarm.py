@@ -130,7 +130,11 @@ def parse_arguments():
     Parse command-line arguments using argparse.
 
     Returns:
-        The parsed arguments.
+    argparse.Namespace: A namespace containing the parsed arguments.
+
+    Raises:
+    ValueError: If the time argument is not a valid time string.
+    ValueError: If the day argument is not a valid integer between 1 and 7.
     """
     parser = argparse.ArgumentParser(
         description="Set an alarm with a custom command.")
