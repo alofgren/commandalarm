@@ -213,7 +213,6 @@ def main():
                 break
     except KeyboardInterrupt:
         print("Alarm stopped manually.", file=sys.stderr)
-        signal.alarm(0)
         sys.exit(1)
 
 
