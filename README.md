@@ -20,7 +20,7 @@ pip install .
 
 ## Usage Output
 
-```bash
+```
 usage: commandalarm [-h] [-v] [-d {1,2,3,4,5,6,7}] [-r] [-s] [-n] [-t TIMEOUT] time command [command ...]
 
 Set an alarm with a custom command.
