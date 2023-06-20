@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.6 (2023-06-21)
+
+### Changed
+- Split the command argument into two (command and argument).
+- Specified the program name in argparse.ArgumentParser.
+
+### Removed
+- Removed call to signal.alarm on KeyboardInterrupt.
+
 ## 0.2.5 (2023-06-20)
 
 ### Changed
