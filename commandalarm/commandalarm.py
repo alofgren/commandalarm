@@ -168,7 +168,7 @@ def main():
         while True:
             while not ALARM_FIRED:
                 if platform.system() == 'Windows':
-                    time.sleep(1)
+                    time.sleep(0.5)
                 else:
                     signal.pause()
             command_str = f"{args.command} {' '.join(args.argument)}"
