@@ -26,8 +26,9 @@ setuptools.setup (
         "Intended Audience :: End Users/Desktop",
         "Natural Language :: English",
         "Operating System :: OS Independent",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3 :: Only",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: Implementation :: CPython"
         "Topic :: Utilities",
     ],
     project_urls = {
@@ -35,5 +36,5 @@ setuptools.setup (
         "Bug Reports": "https://github.com/alofgren/commandalarm/issues",
         "Changelog": "https://github.com/alofgren/commandalarm/blob/main/CHANGELOG.md",
     },
-    python_requires = ">=3"
+    python_requires = ">=3.7"
 )
