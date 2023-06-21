@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.7 (2023-06-21)
+
+### Changed
+- Changed to only use threading.Timer.
+- Checking parameters in the function set_alarm.
+- Updated the description for the option day.
+- Updated the description for the option repeat.
+
 ## 0.2.6 (2023-06-21)
 
 ### Changed
