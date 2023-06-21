@@ -18,8 +18,6 @@
 import argparse
 import datetime
 import errno
-import platform
-import signal
 import subprocess
 import sys
 import threading
@@ -28,16 +26,11 @@ from . import __version__
 
 # pylint: disable=W0603
 ALARM_FIRED = False
-IS_WINDOWS = False
 
 
-def alarm_handler(signum, frame):  # pylint: disable=W0613
+def alarm_handler():
     """
     Handle the alarm signal.
-
-    Parameters:
-    signum (int): The signal number.
-    frame (frame object): The current stack frame.
 
     Returns:
     None
@@ -48,24 +41,25 @@ def alarm_handler(signum, frame):  # pylint: disable=W0613
 
 def set_alarm(time_str, day):
     """
-    Sets an alarm for a specific time and day.
+    Sets a threading timer to execute an alarm at the specified time and day.
 
     Parameters:
     time_str (str): The time in the format HH:MM:SS.
-    day (int): The day of the week as an integer from 1 to 7, where 1 represents Monday.
+    day (int): The day of the week as an integer from 1 to 7.
 
     Raises:
     ValueError: If the time_str is not in the format HH:MM:SS
                or if day is not an integer between 1 and 7.
 
     Returns:
-    None
+    threading.Timer: A threading timer object that will execute
+                    the alarm at the specified time and day.
     """
-    global IS_WINDOWS
     try:
         time_obj = datetime.datetime.strptime(time_str, "%H:%M:%S").time()
     except ValueError as value_err:
-        raise ValueError("time_str must be in the format HH:MM:SS") from value_err
+        raise ValueError(
+            "time_str must be in the format HH:MM:SS") from value_err
     if not isinstance(day, int) or day < 1 or day > 7:
         raise ValueError("day must be an integer between 1 and 7")
     date_obj = datetime.date.today()
@@ -79,15 +73,9 @@ def set_alarm(time_str, day):
         round((alarm_datetime - datetime.datetime.now()).total_seconds()))
     if seconds_until_alarm <= 0:
         seconds_until_alarm = 1
-    if IS_WINDOWS:
-        timer = threading.Timer(seconds_until_alarm,
-                                alarm_handler,
-                                args=(None, None))
-        timer.start()
-    else:
-        signal.signal(signal.SIGALRM, alarm_handler)
-        signal.alarm(seconds_until_alarm)
     print(f"Alarm set for {alarm_datetime}")
+    timer = threading.Timer(seconds_until_alarm, alarm_handler)
+    return timer
 
 
 def valid_time_string(time_str):
@@ -170,19 +158,18 @@ def main():
     The main function that parses command-line arguments, sets the alarm and runs the command.
     """
     global ALARM_FIRED
-    global IS_WINDOWS
     args = parse_arguments()
-    if platform.system() == "Windows":
-        IS_WINDOWS = True
-    IS_WINDOWS = True
     try:
-        set_alarm(args.time, args.day)
+        timer = set_alarm(args.time, args.day)
+        timer.start()
         while True:
             while not ALARM_FIRED:
-                if IS_WINDOWS:
-                    time.sleep(0.5)
-                else:
-                    signal.pause()
+                try:
+                    timer.join()
+                except RuntimeError:
+                    print("Error: Could not join timer thread",
+                          file=sys.stderr)
+                    sys.exit(1)
             command_str = f"{args.command} {' '.join(args.argument)}"
             command = command_str if args.shell else [args.command
                                                       ] + args.argument
@@ -216,11 +203,14 @@ def main():
             if args.repeat:
                 ALARM_FIRED = False
                 time.sleep(1)
-                set_alarm(args.time, args.day)
+                timer = set_alarm(args.time, args.day)
+                timer.start()
             else:
                 break
     except KeyboardInterrupt:
         print("Alarm stopped manually.", file=sys.stderr)
+        timer.cancel()
+        timer.join()
         sys.exit(1)
 
 
