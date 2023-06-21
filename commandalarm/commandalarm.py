@@ -133,7 +133,7 @@ def parse_arguments():
     parser.add_argument("-r",
                         "--repeat",
                         action="store_true",
-                        help="repeat indefinitely")
+                        help="repeat forever")
     parser.add_argument("-s",
                         "--shell",
                         action="store_true",
