@@ -128,7 +128,7 @@ def parse_arguments():
         default=datetime.date.today().isoweekday(),
         type=int,
         help=
-        "the day of the week as an integer from 1 to 7, where 1 represents Monday",
+        "the day of the week as an integer from 1 to 7",
         choices=range(1, 8))
     parser.add_argument("-r",
                         "--repeat",
