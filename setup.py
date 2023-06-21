@@ -5,12 +5,12 @@ with open("README.md", "r") as fh:
 
 setuptools.setup (
     name = "CommandAlarm",
-    version = "0.2.6",
+    version = "0.2.7",
     author = "alofgren",
     author_email = "drelofren@outlook.com",
     description = "A simple command line program that allows users to set an alarm with a custom command.",
     license = "GPLv3",
-    keywords = ["alarm","command","command-line","tool","timer","commandalarm"],
+    keywords = ["alarm", "command", "command-line", "tool", "timer", "commandalarm"],
     url = "https://github.com/alofgren/commandalarm",
     long_description = long_description,
     long_description_content_type = "text/markdown",
@@ -31,8 +31,9 @@ setuptools.setup (
         "Topic :: Utilities",
     ],
     project_urls = {
-        "Bug Reports": "https://github.com/alofgren/commandalarm/issues",
         "Source": "https://github.com/alofgren/commandalarm",
+        "Bug Reports": "https://github.com/alofgren/commandalarm/issues",
+        "Changelog": "https://github.com/alofgren/commandalarm/blob/main/CHANGELOG.md",
     },
     python_requires = ">=3"
 )
