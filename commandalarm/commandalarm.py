@@ -54,11 +54,20 @@ def set_alarm(time_str, day):
     time_str (str): The time in the format HH:MM:SS.
     day (int): The day of the week as an integer from 1 to 7, where 1 represents Monday.
 
+    Raises:
+    ValueError: If the time_str is not in the format HH:MM:SS
+               or if day is not an integer between 1 and 7.
+
     Returns:
     None
     """
     global IS_WINDOWS
-    time_obj = datetime.datetime.strptime(time_str, "%H:%M:%S").time()
+    try:
+        time_obj = datetime.datetime.strptime(time_str, "%H:%M:%S").time()
+    except ValueError as value_err:
+        raise ValueError("time_str must be in the format HH:MM:SS") from value_err
+    if not isinstance(day, int) or day < 1 or day > 7:
+        raise ValueError("day must be an integer between 1 and 7")
     date_obj = datetime.date.today()
     days_ahead = day - date_obj.isoweekday()
     if days_ahead < 0 or (days_ahead == 0
