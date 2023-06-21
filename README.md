@@ -34,8 +34,8 @@ optional arguments:
   -h, --help            show this help message and exit
   -v, --version         show program's version number and exit
   -d {1,2,3,4,5,6,7}, --day {1,2,3,4,5,6,7}
-                        the day of the week as an integer from 1 to 7, where 1 represents Monday
-  -r, --repeat          repeat indefinitely
+                        the day of the week as an integer from 1 to 7
+  -r, --repeat          repeat forever
   -s, --shell           run command in a shell
   -n, --no-check        don't check the command return code
   -t TIMEOUT, --timeout TIMEOUT
