@@ -114,14 +114,10 @@ def valid_time_string(time_str):
 
 def parse_arguments():
     """
-    Parse command-line arguments using argparse.
+    Parse command line arguments.
 
     Returns:
-    argparse.Namespace: A namespace containing the parsed arguments.
-
-    Raises:
-    ValueError: If the time argument is not a valid time string.
-    ValueError: If the day argument is not a valid integer between 1 and 7.
+    argparse.Namespace: The parsed arguments.
     """
     parser = argparse.ArgumentParser(
         prog="commandalarm", description="Set an alarm with a custom command.")
@@ -178,6 +174,7 @@ def main():
     args = parse_arguments()
     if platform.system() == "Windows":
         IS_WINDOWS = True
+    IS_WINDOWS = True
     try:
         set_alarm(args.time, args.day)
         while True:
