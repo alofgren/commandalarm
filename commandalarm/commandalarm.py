@@ -26,7 +26,9 @@ import threading
 import time
 from . import __version__
 
-ALARM_FIRED = False  # pylint: disable=W0603
+# pylint: disable=W0603
+ALARM_FIRED = False
+IS_WINDOWS = False
 
 
 def alarm_handler(signum, frame):  # pylint: disable=W0613
@@ -40,7 +42,7 @@ def alarm_handler(signum, frame):  # pylint: disable=W0613
     Returns:
     None
     """
-    global ALARM_FIRED  # pylint: disable=W0603
+    global ALARM_FIRED
     ALARM_FIRED = True
 
 
@@ -55,6 +57,7 @@ def set_alarm(time_str, day):
     Returns:
     None
     """
+    global IS_WINDOWS
     time_obj = datetime.datetime.strptime(time_str, "%H:%M:%S").time()
     date_obj = datetime.date.today()
     days_ahead = day - date_obj.isoweekday()
@@ -67,7 +70,7 @@ def set_alarm(time_str, day):
         round((alarm_datetime - datetime.datetime.now()).total_seconds()))
     if seconds_until_alarm <= 0:
         seconds_until_alarm = 1
-    if platform.system() == 'Windows':
+    if IS_WINDOWS:
         timer = threading.Timer(seconds_until_alarm,
                                 alarm_handler,
                                 args=(None, None))
@@ -161,13 +164,16 @@ def main():
     """
     The main function that parses command-line arguments, sets the alarm and runs the command.
     """
-    global ALARM_FIRED  # pylint: disable=W0603
+    global ALARM_FIRED
+    global IS_WINDOWS
     args = parse_arguments()
+    if platform.system() == "Windows":
+        IS_WINDOWS = True
     try:
         set_alarm(args.time, args.day)
         while True:
             while not ALARM_FIRED:
-                if platform.system() == 'Windows':
+                if IS_WINDOWS:
                     time.sleep(0.5)
                 else:
                     signal.pause()
