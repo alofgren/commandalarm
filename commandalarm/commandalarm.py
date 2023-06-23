@@ -2,17 +2,18 @@
 # commandalarm.py
 # Copyright (C) 2023 alofgren <drelofren@outlook.com>
 #
-# This program is free software: you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by the Free Software
-# Foundation, either version 3 of the License, or (at your option) any later
-# version.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License along with
-# this program. If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 """ Set an alarm with a custom command. """
 
 import argparse
@@ -41,7 +42,8 @@ def alarm_handler():
 
 def set_alarm(time_str, day):
     """
-    Sets a threading timer to execute an alarm at the specified time and day.
+    Sets a threading timer to execute an alarm at the specified time
+    and day.
 
     Parameters:
     time_str (str): The time in the format HH:MM:SS.
@@ -89,7 +91,8 @@ def valid_time_string(time_str):
     str: The time string if it is valid.
 
     Raises:
-    argparse.ArgumentTypeError: If the time string is not in the correct format.
+    argparse.ArgumentTypeError: If the time string is not in the
+                               correct format.
     """
     try:
         datetime.datetime.strptime(time_str, "%H:%M:%S")
@@ -108,7 +111,8 @@ def parse_arguments():
     argparse.Namespace: The parsed arguments.
     """
     parser = argparse.ArgumentParser(
-        prog="commandalarm", description="Set an alarm with a custom command.")
+        prog="commandalarm",
+        description="Set an alarm with a custom command.")
     parser.add_argument("time",
                         type=valid_time_string,
                         help="the time in the format HH:MM:SS")
@@ -127,8 +131,7 @@ def parse_arguments():
         "--day",
         default=datetime.date.today().isoweekday(),
         type=int,
-        help=
-        "the day of the week as an integer from 1 to 7",
+        help="the day of the week as an integer from 1 to 7",
         choices=range(1, 8))
     parser.add_argument("-r",
                         "--repeat",
@@ -155,7 +158,8 @@ def parse_arguments():
 
 def main():
     """
-    The main function that parses command-line arguments, sets the alarm and runs the command.
+    The main function that parses command-line arguments, sets the
+    alarm and runs the command.
     """
     global ALARM_FIRED
     args = parse_arguments()
@@ -171,8 +175,8 @@ def main():
                           file=sys.stderr)
                     sys.exit(1)
             command_str = f"{args.command} {' '.join(args.argument)}"
-            command = command_str if args.shell else [args.command
-                                                      ] + args.argument
+            command = (command_str if args.shell else
+                       [args.command] + args.argument)
             print("Time is up!")
             print("Running command:", command_str)
             try:
@@ -187,18 +191,17 @@ def main():
                 print("Command not found", file=sys.stderr)
                 sys.exit(errno.ENOENT)
             except subprocess.CalledProcessError as called_process_err:
-                print(
-                    f"Command returned non-zero exit status {called_process_err.returncode}",
-                    file=sys.stderr)
+                print(f"Command returned non-zero exit status "
+                      f"{called_process_err.returncode}", file=sys.stderr)
                 print(f"stderr: {called_process_err.stderr}", file=sys.stderr)
                 sys.exit(called_process_err.returncode)
             except PermissionError as permission_err:
                 print(f"Permission error: {permission_err}", file=sys.stderr)
                 sys.exit(errno.EACCES)
             except subprocess.TimeoutExpired as timeout_expired:
-                print(
-                    f"Command timed out after {timeout_expired.timeout} seconds",
-                    file=sys.stderr)
+                print(f"Command timed out after "
+                      f"{timeout_expired.timeout} seconds",
+                      file=sys.stderr)
                 sys.exit(errno.ETIME)
             if args.repeat:
                 ALARM_FIRED = False
