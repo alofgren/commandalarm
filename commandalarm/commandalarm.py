@@ -42,20 +42,19 @@ def alarm_handler():
 
 def set_alarm(time_str, day):
     """
-    Sets a threading timer to execute an alarm at the specified time
-    and day.
+    Set an alarm for a specific time and day of the week.
 
     Parameters:
     time_str (str): The time in the format HH:MM:SS.
-    day (int): The day of the week as an integer from 1 to 7.
+    day (int): The day of the week, where Monday is 1 and Sunday is 7.
+
+    Returns:
+    threading.Timer: A Timer object that will execute the
+                    alarm_handler function after the specified time.
 
     Raises:
     ValueError: If the time_str is not in the format HH:MM:SS
                or if day is not an integer between 1 and 7.
-
-    Returns:
-    threading.Timer: A threading timer object that will execute
-                    the alarm at the specified time and day.
     """
     try:
         time_obj = datetime.datetime.strptime(time_str, "%H:%M:%S").time()
