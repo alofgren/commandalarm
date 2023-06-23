@@ -76,8 +76,7 @@ def set_alarm(time_str, day):
     if seconds_until_alarm <= 0:
         seconds_until_alarm = 1
     print(f"Alarm set for {alarm_datetime}")
-    timer = threading.Timer(seconds_until_alarm, alarm_handler)
-    return timer
+    return threading.Timer(seconds_until_alarm, alarm_handler)
 
 
 def valid_time_string(time_str):
