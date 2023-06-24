@@ -31,7 +31,14 @@ ALARM_FIRED = False
 
 def alarm_handler():
     """
-    Handle the alarm signal.
+    Sets the global variable ALARM_FIRED to True.
+
+    This function is used as a callback for a threading.Timer object.
+    When the timer expires, it calls this function to set the
+    ALARM_FIRED flag.
+
+    Parameters:
+    None
 
     Returns:
     None
@@ -109,17 +116,18 @@ def parse_arguments():
     argparse.Namespace: The parsed arguments.
     """
     parser = argparse.ArgumentParser(
-        prog="commandalarm",
-        description="Set an alarm with a custom command.")
+        prog="commandalarm", description="Set an alarm with a custom command.")
     parser.add_argument("time",
                         type=valid_time_string,
                         help="the time in the format HH:MM:SS")
     parser.add_argument("command", type=str, help="the command to run")
-    parser.add_argument("argument",
-                        default=None,
-                        type=str,
-                        nargs="*",
-                        help="the arguments to the command")
+    parser.add_argument(
+        "argument",
+        default=None,
+        type=str,
+        nargs="*",
+        help="the arguments to the command",
+    )
     parser.add_argument("-v",
                         "--version",
                         action="version",
@@ -130,27 +138,34 @@ def parse_arguments():
         default=datetime.date.today().isoweekday(),
         type=int,
         help="the day of the week as an integer from 1 to 7",
-        choices=range(1, 8))
+        choices=range(1, 8),
+    )
     parser.add_argument("-r",
                         "--repeat",
                         action="store_true",
                         help="repeat forever")
-    parser.add_argument("-s",
-                        "--shell",
-                        action="store_true",
-                        default=False,
-                        help="run command in a shell")
-    parser.add_argument("-n",
-                        "--no-check",
-                        action="store_false",
-                        default=True,
-                        help="don't check the command return code",
-                        dest="check")
-    parser.add_argument("-t",
-                        "--timeout",
-                        default=None,
-                        type=int,
-                        help="timeout in seconds for the command to complete")
+    parser.add_argument(
+        "-s",
+        "--shell",
+        action="store_true",
+        default=False,
+        help="run command in a shell",
+    )
+    parser.add_argument(
+        "-n",
+        "--no-check",
+        action="store_false",
+        default=True,
+        help="don't check the command return code",
+        dest="check",
+    )
+    parser.add_argument(
+        "-t",
+        "--timeout",
+        default=None,
+        type=int,
+        help="timeout in seconds for the command to complete",
+    )
     return parser.parse_args()
 
 
@@ -173,33 +188,40 @@ def main():
                           file=sys.stderr)
                     sys.exit(1)
             command_str = f"{args.command} {' '.join(args.argument)}"
-            command = (command_str if args.shell else
-                       [args.command] + args.argument)
+            command = command_str if args.shell else [args.command
+                                                      ] + args.argument
             print("Time is up!")
             print("Running command:", command_str)
             try:
-                result = subprocess.run(command,
-                                        capture_output=True,
-                                        shell=args.shell,
-                                        timeout=args.timeout,
-                                        check=args.check,
-                                        text=True)
+                result = subprocess.run(
+                    command,
+                    capture_output=True,
+                    shell=args.shell,
+                    timeout=args.timeout,
+                    check=args.check,
+                    text=True,
+                )
                 print(result.stdout.strip())
             except FileNotFoundError:
                 print("Command not found", file=sys.stderr)
                 sys.exit(errno.ENOENT)
             except subprocess.CalledProcessError as called_process_err:
-                print(f"Command returned non-zero exit status "
-                      f"{called_process_err.returncode}", file=sys.stderr)
+                print(
+                    f"Command returned non-zero exit status "
+                    f"{called_process_err.returncode}",
+                    file=sys.stderr,
+                )
                 print(f"stderr: {called_process_err.stderr}", file=sys.stderr)
                 sys.exit(called_process_err.returncode)
             except PermissionError as permission_err:
                 print(f"Permission error: {permission_err}", file=sys.stderr)
                 sys.exit(errno.EACCES)
             except subprocess.TimeoutExpired as timeout_expired:
-                print(f"Command timed out after "
-                      f"{timeout_expired.timeout} seconds",
-                      file=sys.stderr)
+                print(
+                    f"Command timed out after "
+                    f"{timeout_expired.timeout} seconds",
+                    file=sys.stderr,
+                )
                 sys.exit(errno.ETIME)
             if args.repeat:
                 ALARM_FIRED = False
