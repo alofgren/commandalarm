@@ -171,8 +171,17 @@ def parse_arguments():
 
 def main():
     """
-    The main function that parses command-line arguments, sets the
-    alarm and runs the command.
+    The main function sets a threading timer and runs a command when
+    the timer goes off.
+
+    Exit Codes:
+    - errno.ENOENT: The command was not found.
+    - errno.EACCES: The user did not have permission to run the command.
+    - errno.ETIME: The command timed out.
+    - Non-zero: The same exit code is used as the command if it exits
+               with a non-zero code unless the --no-check option is used.
+    - 1: If none of the above errors have occurred, then a runtime
+        error, a value error, or a keyboard interrupt occurred.
     """
     global ALARM_FIRED
     args = parse_arguments()
