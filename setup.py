@@ -1,11 +1,12 @@
 import setuptools
+import commandalarm
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup (
     name = "CommandAlarm",
-    version = "0.2.7",
+    version = commandalarm.__version__,
     author = "alofgren",
     author_email = "drelofren@outlook.com",
     description = "A simple command line program that allows users to set an alarm with a custom command.",
