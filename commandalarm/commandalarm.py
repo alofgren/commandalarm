@@ -77,8 +77,8 @@ def set_alarm(time_str, day):
         days_ahead += 7
     date_obj += datetime.timedelta(days=days_ahead)
     alarm_datetime = datetime.datetime.combine(date_obj, time_obj)
-    seconds_until_alarm = int(
-        round((alarm_datetime - datetime.datetime.now()).total_seconds()))
+    seconds_until_alarm = (alarm_datetime -
+                           datetime.datetime.now()).total_seconds()
     if seconds_until_alarm <= 0:
         seconds_until_alarm = 1
     print(f"Alarm set for {alarm_datetime}")
