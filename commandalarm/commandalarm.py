@@ -79,17 +79,17 @@ def set_alarm(time_str, day):
     return threading.Timer(seconds_until_alarm, alarm_handler)
 
 
-def exit_with_error(message, error_code):
+def error_exit(message, exit_code):
     """
     Print an error message to the standard error stream and exit the
-    program with a specified error code.
+    program with a specified exit status code.
 
     Parameters:
     message (str): The error message to be printed.
-    error_code (int): The error code to be passed to sys.exit().
+    exit_code (int): The exit code to be passed to sys.exit().
     """
     print(message, file=sys.stderr)
-    sys.exit(error_code)
+    sys.exit(exit_code)
 
 
 def valid_time_string(time_str):
@@ -200,7 +200,7 @@ def main():
                 try:
                     timer.join()
                 except RuntimeError:
-                    exit_with_error("Error: Could not join timer thread", 1)
+                    error_exit("Error: Could not join timer thread", 1)
             command_str = f"{args.command} {' '.join(args.argument)}"
             command = command_str if args.shell else [args.command
                                                       ] + args.argument
@@ -215,19 +215,19 @@ def main():
                     text=True,
                 )
             except FileNotFoundError:
-                exit_with_error("Command not found", errno.ENOENT)
+                error_exit("Command not found", errno.ENOENT)
             except subprocess.CalledProcessError as called_process_err:
-                exit_with_error(
+                error_exit(
                     "Command exited with status code " +
                     str(called_process_err.returncode) + ": " +
                     called_process_err.stderr.strip(),
                     called_process_err.returncode,
                 )
             except PermissionError as permission_err:
-                exit_with_error("Permission error: " + str(permission_err),
-                                errno.EACCES)
+                error_exit("Permission error: " + str(permission_err),
+                           errno.EACCES)
             except subprocess.TimeoutExpired as timeout_expired:
-                exit_with_error(
+                error_exit(
                     "Command timed out after " + str(timeout_expired.timeout) +
                     " seconds",
                     errno.ETIME,
@@ -242,11 +242,11 @@ def main():
             else:
                 break
     except (ValueError, TypeError, AttributeError) as exception:
-        exit_with_error("Unable to set the alarm: " + str(exception), 1)
+        error_exit("Unable to set the alarm: " + str(exception), 1)
     except KeyboardInterrupt:
         timer.cancel()
         timer.join()
-        exit_with_error("Alarm stopped manually.", 1)
+        error_exit("Alarm stopped manually.", 1)
 
 
 if __name__ == "__main__":
