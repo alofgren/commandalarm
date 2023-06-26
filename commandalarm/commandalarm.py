@@ -36,12 +36,6 @@ def alarm_handler():
     This function is used as a callback for a threading.Timer object.
     When the timer expires, it calls this function to set the
     ALARM_FIRED flag.
-
-    Parameters:
-    None
-
-    Returns:
-    None
     """
     global ALARM_FIRED
     ALARM_FIRED = True
