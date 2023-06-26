@@ -239,6 +239,9 @@ def main():
                 timer.start()
             else:
                 break
+    except (ValueError, TypeError, AttributeError) as exception:
+        print("Unable to set the alarm:", exception, file=sys.stderr)
+        sys.exit(1)
     except KeyboardInterrupt:
         print("Alarm stopped manually.", file=sys.stderr)
         timer.cancel()
