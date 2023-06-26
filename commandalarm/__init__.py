@@ -15,4 +15,4 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 """ Set an alarm with a custom command. """
 
-__version__ = "0.2.7"
+__version__ = "0.2.8"
