@@ -193,8 +193,7 @@ def main():
             command_str = f"{args.command} {' '.join(args.argument)}"
             command = command_str if args.shell else [args.command
                                                       ] + args.argument
-            print("Time is up!")
-            print("Running command:", command_str)
+            print("Time is up!\nRunning command:", command_str)
             try:
                 result = subprocess.run(
                     command,
