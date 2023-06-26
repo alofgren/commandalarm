@@ -200,9 +200,7 @@ def main():
                 try:
                     timer.join()
                 except RuntimeError:
-                    print("Error: Could not join timer thread",
-                          file=sys.stderr)
-                    sys.exit(1)
+                    exit_with_error("Error: Could not join timer thread", 1)
             command_str = f"{args.command} {' '.join(args.argument)}"
             command = command_str if args.shell else [args.command
                                                       ] + args.argument
@@ -217,26 +215,23 @@ def main():
                     text=True,
                 )
             except FileNotFoundError:
-                print("Command not found", file=sys.stderr)
-                sys.exit(errno.ENOENT)
+                exit_with_error("Command not found", errno.ENOENT)
             except subprocess.CalledProcessError as called_process_err:
-                print(
-                    f"Command returned non-zero exit status "
-                    f"{called_process_err.returncode}",
-                    file=sys.stderr,
+                exit_with_error(
+                    "Command exited with status code " +
+                    str(called_process_err.returncode) + ": " +
+                    called_process_err.stderr.strip(),
+                    called_process_err.returncode,
                 )
-                print(f"stderr: {called_process_err.stderr}", file=sys.stderr)
-                sys.exit(called_process_err.returncode)
             except PermissionError as permission_err:
-                print(f"Permission error: {permission_err}", file=sys.stderr)
-                sys.exit(errno.EACCES)
+                exit_with_error("Permission error: " + str(permission_err),
+                                errno.EACCES)
             except subprocess.TimeoutExpired as timeout_expired:
-                print(
-                    f"Command timed out after "
-                    f"{timeout_expired.timeout} seconds",
-                    file=sys.stderr,
+                exit_with_error(
+                    "Command timed out after " + str(timeout_expired.timeout) +
+                    " seconds",
+                    errno.ETIME,
                 )
-                sys.exit(errno.ETIME)
             else:
                 print(result.stdout.strip())
             if args.repeat:
@@ -247,13 +242,11 @@ def main():
             else:
                 break
     except (ValueError, TypeError, AttributeError) as exception:
-        print("Unable to set the alarm:", exception, file=sys.stderr)
-        sys.exit(1)
+        exit_with_error("Unable to set the alarm: " + str(exception), 1)
     except KeyboardInterrupt:
-        print("Alarm stopped manually.", file=sys.stderr)
         timer.cancel()
         timer.join()
-        sys.exit(1)
+        exit_with_error("Alarm stopped manually.", 1)
 
 
 if __name__ == "__main__":
