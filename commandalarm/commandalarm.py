@@ -79,6 +79,19 @@ def set_alarm(time_str, day):
     return threading.Timer(seconds_until_alarm, alarm_handler)
 
 
+def exit_with_error(message, error_code):
+    """
+    Print an error message to the standard error stream and exit the
+    program with a specified error code.
+
+    Parameters:
+    message (str): The error message to be printed.
+    error_code (int): The error code to be passed to sys.exit().
+    """
+    print(message, file=sys.stderr)
+    sys.exit(error_code)
+
+
 def valid_time_string(time_str):
     """
     Validates that the time string is in the correct format.
