@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.8 (2023-06-26)
+
+### Changed
+- Updated the description for the --no-check option.
+
+### Removed
+- Removed the minimum number of seconds being set to 1 in the set_alarm function.
+- Removed int and round calls in the set_alarm function.
+
 ## 0.2.7 (2023-06-21)
 
 ### Changed
