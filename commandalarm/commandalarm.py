@@ -88,7 +88,8 @@ def error_exit(message, exit_code):
     message (str): The error message to be printed.
     exit_code (int): The exit code to be passed to sys.exit().
     """
-    print(message, file=sys.stderr)
+    error_msg = "".join(message)
+    print(error_msg, file=sys.stderr)
     sys.exit(exit_code)
 
 
@@ -218,18 +219,19 @@ def main():
                 error_exit("Command not found", errno.ENOENT)
             except subprocess.CalledProcessError as called_process_err:
                 error_exit(
-                    "Command exited with status code " +
-                    str(called_process_err.returncode) + ": " +
-                    called_process_err.stderr.strip(),
+                    (
+                        f"Command exited with status code "
+                        f"{called_process_err.returncode}: ",
+                        f"{called_process_err.stderr.strip()}",
+                    ),
                     called_process_err.returncode,
                 )
             except PermissionError as permission_err:
-                error_exit("Permission error: " + str(permission_err),
-                           errno.EACCES)
+                error_exit(f"Permission error: {permission_err}", errno.EACCES)
             except subprocess.TimeoutExpired as timeout_expired:
                 error_exit(
-                    "Command timed out after " + str(timeout_expired.timeout) +
-                    " seconds",
+                    f"Command timed out after "
+                    f"{timeout_expired.timeout} seconds",
                     errno.ETIME,
                 )
             else:
@@ -242,7 +244,7 @@ def main():
             else:
                 break
     except (ValueError, TypeError, AttributeError) as exception:
-        error_exit("Unable to set the alarm: " + str(exception), 1)
+        error_exit(f"Unable to set the alarm: {exception}", 1)
     except KeyboardInterrupt:
         timer.cancel()
         timer.join()
