@@ -204,7 +204,6 @@ def main():
                     check=args.check,
                     text=True,
                 )
-                print(result.stdout.strip())
             except FileNotFoundError:
                 print("Command not found", file=sys.stderr)
                 sys.exit(errno.ENOENT)
@@ -226,6 +225,8 @@ def main():
                     file=sys.stderr,
                 )
                 sys.exit(errno.ETIME)
+            else:
+                print(result.stdout.strip())
             if args.repeat:
                 ALARM_FIRED = False
                 time.sleep(1)
