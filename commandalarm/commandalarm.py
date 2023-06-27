@@ -202,7 +202,8 @@ def main():
                     timer.join()
                 except RuntimeError:
                     error_exit("Error: Could not join timer thread")
-            command_str = f"{args.command} {' '.join(args.argument)}"
+            command_str = (f"{args.command} {' '.join(args.argument)}"
+                           if args.argument else args.command)
             command = command_str if args.shell else [args.command
                                                       ] + args.argument
             print("Time is up!\nRunning command:", command_str)
