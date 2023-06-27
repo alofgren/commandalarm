@@ -79,17 +79,17 @@ def set_alarm(time_str, day):
     return threading.Timer(seconds_until_alarm, alarm_handler)
 
 
-def error_exit(message, exit_code):
+def error_exit(message, exit_code=1):
     """
     Print an error message to the standard error stream and exit the
     program with a specified exit status code.
 
     Parameters:
     message (str): The error message to be printed.
-    exit_code (int): The exit code to be passed to sys.exit().
+    exit_code (int, optional): The exit status code to be passed to
+                              sys.exit(). Defaults to 1.
     """
-    error_msg = "".join(message)
-    print(error_msg, file=sys.stderr)
+    print(message, file=sys.stderr)
     sys.exit(exit_code)
 
 
@@ -201,7 +201,7 @@ def main():
                 try:
                     timer.join()
                 except RuntimeError:
-                    error_exit("Error: Could not join timer thread", 1)
+                    error_exit("Error: Could not join timer thread")
             command_str = f"{args.command} {' '.join(args.argument)}"
             command = command_str if args.shell else [args.command
                                                       ] + args.argument
@@ -219,11 +219,9 @@ def main():
                 error_exit("Command not found", errno.ENOENT)
             except subprocess.CalledProcessError as called_process_err:
                 error_exit(
-                    (
-                        f"Command exited with status code "
-                        f"{called_process_err.returncode}: ",
-                        f"{called_process_err.stderr.strip()}",
-                    ),
+                    f"Command exited with status code "
+                    f"{called_process_err.returncode}: "
+                    f"{called_process_err.stderr.strip()}",
                     called_process_err.returncode,
                 )
             except PermissionError as permission_err:
@@ -244,11 +242,11 @@ def main():
             else:
                 break
     except (ValueError, TypeError, AttributeError) as exception:
-        error_exit(f"Unable to set the alarm: {exception}", 1)
+        error_exit(f"Unable to set the alarm: {exception}")
     except KeyboardInterrupt:
         timer.cancel()
         timer.join()
-        error_exit("Alarm stopped manually.", 1)
+        error_exit("Alarm stopped manually.")
 
 
 if __name__ == "__main__":
