@@ -164,7 +164,7 @@ def parse_arguments():
         "--no-check",
         action="store_false",
         default=True,
-        help="don't check the command return code",
+        help="don't check the command exit code",
         dest="check",
     )
     parser.add_argument(
