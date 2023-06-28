@@ -242,7 +242,7 @@ def main():
                 timer.start()
             else:
                 break
-    except (ValueError, TypeError, AttributeError) as exception:
+    except (NameError, TypeError, ValueError, AttributeError) as exception:
         error_exit(f"Unable to set the alarm: {exception}")
     except KeyboardInterrupt:
         timer.cancel()
