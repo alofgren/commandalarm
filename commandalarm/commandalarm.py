@@ -81,11 +81,11 @@ def set_alarm(time_str, day):
 
 def error_exit(message, exit_code=1):
     """
-    Print an error message to the standard error stream and exit the
-    program with a specified exit status code.
+    Print a message to the standard error stream and exit the program
+    with an exit status code.
 
     Parameters:
-    message (str): The error message to be printed.
+    message (str): The message to be printed.
     exit_code (int, optional): The exit status code to be passed to
                               sys.exit(). Defaults to 1.
     """
