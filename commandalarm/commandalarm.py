@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # commandalarm.py
 # Copyright (C) 2023 alofgren <drelofren@outlook.com>
 #
