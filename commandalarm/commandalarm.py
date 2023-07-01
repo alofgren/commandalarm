@@ -19,7 +19,6 @@ import argparse
 import datetime
 import errno
 import subprocess
-import sys
 import threading
 import time
 from . import __version__
@@ -76,20 +75,6 @@ def set_alarm(time_str, day):
     return threading.Timer(seconds_until_alarm, alarm_handler)
 
 
-def error_exit(message, exit_code=1):
-    """
-    Print a message to the standard error stream and exit the program
-    with an exit status code.
-
-    Parameters:
-    message (str): The message to be printed.
-    exit_code (int, optional): The exit status code to be passed to
-                              sys.exit(). Defaults to 1.
-    """
-    print(message, file=sys.stderr)
-    sys.exit(exit_code)
-
-
 def valid_time_string(time_str):
     """
     Validates that the time string is in the correct format.
@@ -118,7 +103,7 @@ def parse_arguments():
     Parse command line arguments.
 
     Returns:
-    argparse.Namespace: The parsed arguments.
+    argparse.ArgumentParser() object.
     """
     parser = argparse.ArgumentParser(
         prog="commandalarm", description="Set an alarm with a custom command.")
@@ -171,7 +156,7 @@ def parse_arguments():
         type=int,
         help="timeout in seconds for the command to complete",
     )
-    return parser.parse_args()
+    return parser
 
 
 def main():
@@ -189,7 +174,8 @@ def main():
         error, a value error, or a keyboard interrupt occurred.
     """
     global ALARM_FIRED
-    args = parse_arguments()
+    parser = parse_arguments()
+    args = parser.parse_args()
     try:
         timer = set_alarm(args.time, args.day)
         timer.start()
@@ -198,7 +184,7 @@ def main():
                 try:
                     timer.join()
                 except RuntimeError:
-                    error_exit("Error: Could not join timer thread")
+                    parser.exit("Error: Could not join timer thread")
             command_str = (f"{args.command} {' '.join(args.argument)}"
                            if args.argument else args.command)
             command = command_str if args.shell else [args.command
@@ -214,21 +200,22 @@ def main():
                     text=True,
                 )
             except FileNotFoundError:
-                error_exit("Command not found", errno.ENOENT)
+                parser.exit(errno.ENOENT, "Command not found")
             except subprocess.CalledProcessError as called_process_err:
-                error_exit(
+                parser.exit(
+                    called_process_err.returncode,
                     f"Command exited with status code "
                     f"{called_process_err.returncode}: "
                     f"{called_process_err.stderr.strip()}",
-                    called_process_err.returncode,
                 )
             except PermissionError as permission_err:
-                error_exit(f"Permission error: {permission_err}", errno.EACCES)
+                parser.exit(errno.EACCES,
+                            f"Permission error: {permission_err}")
             except subprocess.TimeoutExpired as timeout_expired:
-                error_exit(
+                parser.exit(
+                    errno.ETIME,
                     f"Command timed out after "
                     f"{timeout_expired.timeout} seconds",
-                    errno.ETIME,
                 )
             else:
                 print(result.stdout.strip())
@@ -240,11 +227,11 @@ def main():
             else:
                 break
     except (NameError, TypeError, ValueError, AttributeError) as exception:
-        error_exit(f"Unable to set the alarm: {exception}")
+        parser.exit(f"Unable to set the alarm: {exception}")
     except KeyboardInterrupt:
         timer.cancel()
         timer.join()
-        error_exit("Alarm stopped manually.")
+        parser.exit("Alarm stopped manually.")
 
 
 if __name__ == "__main__":
