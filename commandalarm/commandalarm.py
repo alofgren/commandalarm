@@ -206,7 +206,7 @@ def main():
                     called_process_err.returncode,
                     f"Command exited with status code "
                     f"{called_process_err.returncode}: "
-                    f"{called_process_err.stderr.strip()}",
+                    f"{called_process_err.stderr}",
                 )
             except PermissionError as permission_err:
                 parser.exit(errno.EACCES,
@@ -218,7 +218,7 @@ def main():
                     f"{timeout_expired.timeout} seconds",
                 )
             else:
-                print(result.stdout.strip())
+                print(result.stdout)
             if args.repeat:
                 ALARM_FIRED = False
                 time.sleep(1)
