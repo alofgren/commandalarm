@@ -68,12 +68,6 @@ commandalarm 16:00:00 -- ls -l
 
 If you would like to contribute to CommandAlarm, please feel free to submit a pull request or open an issue on the [GitHub repository](https://github.com/alofgren/commandalarm).
 
-## Donate
-
-If you find this program useful, please consider making a donation.
-
-**Monero (XMR):** 485xWUhbhKMg4FqTbfDEa8frAZUeh5KrVbhkMwUXbg6JNd7QoWfChvMYhHr1zZEpZ6FYp47dXCddbdH4UT6xvonn3KfaG8S
-
 ## License
 
 CommandAlarm is licensed under the [GPL License](https://github.com/alofgren/commandalarm/blob/main/LICENSE).
