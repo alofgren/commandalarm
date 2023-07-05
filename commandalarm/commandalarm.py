@@ -98,9 +98,9 @@ def valid_time_string(time_str):
         ) from value_err
 
 
-def parse_arguments():
+def create_parser():
     """
-    Parse command line arguments.
+    Create an argument parser.
 
     Returns:
     argparse.ArgumentParser() object.
@@ -174,7 +174,7 @@ def main():
         error, a value error, or a keyboard interrupt occurred.
     """
     global ALARM_FIRED
-    parser = parse_arguments()
+    parser = create_parser()
     args = parser.parse_args()
     try:
         timer = set_alarm(args.time, args.day)
